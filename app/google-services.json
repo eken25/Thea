@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "633198616190",
+    "firebase_url": "https://com-prdeck-thea.firebaseio.com",
+    "project_id": "com-prdeck-thea",
+    "storage_bucket": "com-prdeck-thea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633198616190:android:6377f46925d97883",
+        "android_client_info": {
+          "package_name": "com.prdeck.thea"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633198616190-kv4h1jmqdu6v0onj6r45lf0u0taum5ok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prdeck.thea",
+            "certificate_hash": "0d5c8fa51efe6a0ed96cad049006e8d78057d0e0"
+          }
+        },
+        {
+          "client_id": "633198616190-nja8buumo635l57k3dll199ldrqrfgrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSD5Eot8yPCbGARF-0ISZ7Ty1HWotU_Ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633198616190-nja8buumo635l57k3dll199ldrqrfgrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
