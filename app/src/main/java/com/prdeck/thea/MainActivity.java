@@ -2,10 +2,7 @@ package com.prdeck.thea;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Application;
 import android.app.usage.UsageEvents;
-import android.app.usage.UsageStats;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -20,7 +17,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Process;
 import android.app.usage.UsageStatsManager;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,22 +25,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.PropertyResourceBundle;
-import java.util.jar.Attributes;
-
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
-    private static String tag = "Apps";
+    private String mHeader = "Package name,Start_Time,End_Time,Duration,Category\n";
+    private static String TAG = "Apps";
+    TextView mTxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTxt = this.findViewById(R.id.output);
         Button u = (Button) this.findViewById(R.id.buttonPanel);
         u.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             FileOutputStream f = context.openFileOutput(filename, Context.MODE_PRIVATE);
             final OutputStreamWriter  osw = new OutputStreamWriter(f);
-            osw.write("Package name,Start_Time,End_Time,Duration,Category\n");
+            osw.write(mHeader);
             data.forEach(d -> {
                 try {
                     osw.write(d.toString() + "\n");
@@ -139,6 +138,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        StringBuilder s = new StringBuilder(mHeader);
+        int i = 0;
+        for(AppData r : data){
+            s.append(r.toString());
+            i++;
+            if(i > 100) break;
+        }
+        mTxt.setText(s.toString());
         /*data.forEach(d -> {
             Log.d(tag, d.toString());
         });*/
@@ -155,14 +162,14 @@ public class MainActivity extends AppCompatActivity {
         ut.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(tag, "Unsuccessfully uploaded the data");
+                Log.d(TAG, "Unsuccessfully uploaded the data");
                 e.printStackTrace();
             }
         });
         ut.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.d(tag, "Successfully uploaded the data");
+                Log.d(TAG, "Successfully uploaded the data");
             }
         });
     }
