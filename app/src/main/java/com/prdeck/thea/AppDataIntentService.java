@@ -32,8 +32,9 @@ public class AppDataIntentService extends JobIntentService {
     private String mHeader = "Package name,Start_Time,End_Time,Duration,Category\n";
     private static String TAG = "Apps";
     private static String ACTION_FIREBASE = "Firebase";
-    static List<AppData> data = new ArrayList<>();
+    List<AppData> data = new ArrayList<>();
     static final String USER_PREF = "USER_PREF" ;
+    SharedPreferences mSp;
     static final String LATEST_TIMESTAMP = "KEY_NAME";
 
     private int getAppCat(String packname){
@@ -87,10 +88,9 @@ public class AppDataIntentService extends JobIntentService {
         UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar = Calendar.getInstance();
         long endTime = calendar.getTimeInMillis();
-        //
-        calendar.add(Calendar.DAY_OF_WEEK, -1);
-        //
-        long startTime = calendar.getTimeInMillis();
+        /*calendar.add(Calendar.DAY_OF_WEEK, -1);
+        long startTime = calendar.getTimeInMillis();*/
+        long startTime = getTimeStamp();
         UsageEvents uEvents = usm.queryEvents(startTime,endTime);
         List<String> p = getInstalledApps(context);
         HashMap<String,Long> map = new HashMap<String,Long>();
@@ -122,17 +122,22 @@ public class AppDataIntentService extends JobIntentService {
         /*data.forEach(d -> {
             Log.d(tag, d.toString());
         });*/
-        File fname = saveToTextFile(context, data);
-        uploadToCloud(fname);
+        if(data.size() > 0){
+            File fname = saveToTextFile(context, data);
+            uploadToCloud(fname);
+        }
+
     }
 
-    private  void getTimeStamp(){
+    private  void saveTimeStamp(){
         AppData p = data.get(data.size() - 1);
-        long startTime=  p.getStartTime();
-        SharedPreferences sp = getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString(LATEST_TIMESTAMP, String.valueOf(startTime));
+        SharedPreferences.Editor editor = mSp.edit();
+        editor.putLong(LATEST_TIMESTAMP,  p.getStartTime());
         editor.commit();
+    }
+
+    private long getTimeStamp(){
+        return mSp.getLong(LATEST_TIMESTAMP,0L);
     }
 
     private void uploadToCloud(File fname){
@@ -152,9 +157,16 @@ public class AppDataIntentService extends JobIntentService {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "Successfully uploaded the data");
+                saveTimeStamp();
             }
         });
-        getTimeStamp();
+
+    }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        mSp = getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -166,6 +178,7 @@ public class AppDataIntentService extends JobIntentService {
         Intent work = new Intent(context, AppDataIntentService.class);
         work.setAction(ACTION_FIREBASE);
         enqueueWork(context, AppDataIntentService.class, JOB_ID, work);
+
     }
 
     @Override
