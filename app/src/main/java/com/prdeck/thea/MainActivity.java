@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean b = checkForPermission(getApplicationContext());
                 if(b){
                     AppDataIntentService.enqueueWork(getApplicationContext());
+
                 }else{
                     startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                 }
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     private boolean checkForPermission(Context context) {
         AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);

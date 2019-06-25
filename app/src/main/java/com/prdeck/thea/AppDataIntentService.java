@@ -4,22 +4,20 @@ import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,8 +30,11 @@ import java.util.List;
 public class AppDataIntentService extends JobIntentService {
     static final int JOB_ID = 1000;
     private String mHeader = "Package name,Start_Time,End_Time,Duration,Category\n";
-    private String TAG = "Apps";
+    private static String TAG = "Apps";
     private static String ACTION_FIREBASE = "Firebase";
+    static List<AppData> data = new ArrayList<>();
+    static final String USER_PREF = "USER_PREF" ;
+    static final String LATEST_TIMESTAMP = "KEY_NAME";
 
     private int getAppCat(String packname){
         int cat = ApplicationInfo.CATEGORY_UNDEFINED;
@@ -86,12 +87,13 @@ public class AppDataIntentService extends JobIntentService {
         UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar = Calendar.getInstance();
         long endTime = calendar.getTimeInMillis();
-        calendar.add(Calendar.MONTH, -1);
+        //
+        calendar.add(Calendar.DAY_OF_WEEK, -1);
+        //
         long startTime = calendar.getTimeInMillis();
         UsageEvents uEvents = usm.queryEvents(startTime,endTime);
         List<String> p = getInstalledApps(context);
         HashMap<String,Long> map = new HashMap<String,Long>();
-        List<AppData> data = new ArrayList<>();
         while (uEvents.hasNextEvent()){
             UsageEvents.Event e = new UsageEvents.Event();
             uEvents.getNextEvent(e);
@@ -124,6 +126,15 @@ public class AppDataIntentService extends JobIntentService {
         uploadToCloud(fname);
     }
 
+    private  void getTimeStamp(){
+        AppData p = data.get(data.size() - 1);
+        long startTime=  p.getStartTime();
+        SharedPreferences sp = getSharedPreferences(USER_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(LATEST_TIMESTAMP, String.valueOf(startTime));
+        editor.commit();
+    }
+
     private void uploadToCloud(File fname){
         Uri uri = Uri.fromFile(fname);
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -143,6 +154,7 @@ public class AppDataIntentService extends JobIntentService {
                 Log.d(TAG, "Successfully uploaded the data");
             }
         });
+        getTimeStamp();
     }
 
     @Override
