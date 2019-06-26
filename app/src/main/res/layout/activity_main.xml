@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#FFFFFF"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <TextView
         android:id="@+id/prdeck"
         android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPanel"
+        app:layout_constraintBottom_toTopOf="@+id/gloss"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thea">
@@ -60,22 +60,27 @@
             app:layout_constraintTop_toTopOf="parent" />
     </ScrollView>
 
-    <Button
-        android:id="@+id/buttonPanel"
-        android:layout_width="124dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="112dp"
-        android:text="Run"
-        android:textSize="15dp"
-        android:elevation="10dp"
-        android:background="@drawable/roundedbuttons"
-        android:fontFamily="@font/avenir"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 
+
+    <ImageView
+        android:layout_width="235dp"
+        android:id="@+id/gloss"
+        android:layout_height="148dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="52dp"
+        android:src="@drawable/c"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:layout_width="43dp"
+        android:layout_height="19dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="122dp"
+        android:fontFamily="@font/avenir"
+        android:text="RUN"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

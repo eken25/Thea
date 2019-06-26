@@ -8,11 +8,4 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="Theme.Uplift" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:ambientShadowAlpha">1</item>
-        <item name="android:outlineAmbientShadowColor">#FF0000</item>
-        <item name="android:spotShadowAlpha">1</item>
-        <item name="android:outlineSpotShadowColor">#000000</item>
-    </style>
 </resources>

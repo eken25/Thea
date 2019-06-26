@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import static com.prdeck.thea.Const.ACTION_COMPLETE;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTxt = this.findViewById(R.id.output);
-        Button u = (Button) this.findViewById(R.id.buttonPanel);
+        ImageView u = (ImageView) this.findViewById(R.id.gloss);
         u.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
