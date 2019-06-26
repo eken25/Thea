@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Thea</string>
+    <string name="action_complete">Successfully uploaded data</string>
+    <string name="action_not_complete">Failed to upload data</string>
 </resources>

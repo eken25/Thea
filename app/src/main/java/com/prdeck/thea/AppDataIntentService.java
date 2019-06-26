@@ -13,6 +13,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -151,6 +153,7 @@ public class AppDataIntentService extends JobIntentService {
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Unsuccessfully uploaded the data");
                 e.printStackTrace();
+                sendStatus(0);
             }
         });
         ut.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -158,6 +161,8 @@ public class AppDataIntentService extends JobIntentService {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "Successfully uploaded the data");
                 saveTimeStamp();
+                sendStatus(1);
+
             }
         });
 
@@ -172,6 +177,13 @@ public class AppDataIntentService extends JobIntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void sendStatus(int status){
+        Intent intent = new Intent(Const.ACTION_COMPLETE);
+        intent.putExtra(Const.EXTRA_STATUS, status);
+        LocalBroadcastManager.getInstance(AppDataIntentService.this)
+                .sendBroadcast(intent);
     }
 
     static void enqueueWork(Context context) {
