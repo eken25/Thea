@@ -9,11 +9,12 @@
     </padding>
     <gradient
         android:angle="0"
-        android:centerColor="#009BFF"
+
         android:centerX="0.5"
         android:centerY="0.5"
-        android:endColor="#2AC9DB"
         android:startColor="#CF77F3"
+        android:centerColor="#009BFF"
+        android:endColor="#2AC9DB"
         android:type="linear"/>
     <corners android:radius="20dp"></corners>
 </shape>
