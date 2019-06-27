@@ -32,7 +32,7 @@ import java.util.List;
 public class AppDataIntentService extends JobIntentService {
     static final int JOB_ID = 1000;
     private String mHeader = "Package name,Start_Time,End_Time,Duration,Category\n";
-    private static String TAG = "Apps";
+    private static String TAG = Const.TAG;
     private static String ACTION_FIREBASE = "Firebase";
     List<AppData> data = new ArrayList<>();
     static final String USER_PREF = "USER_PREF" ;
@@ -55,8 +55,8 @@ public class AppDataIntentService extends JobIntentService {
         List<String> s = new ArrayList<>();
         l.forEach(a -> {
             if ((a.activityInfo != null) && (!TextUtils.isEmpty(a.activityInfo.taskAffinity))) {
-                //Log.d(tag, "activity:" + a.activityInfo.taskAffinity);
-                if(a.activityInfo.taskAffinity != "com.prdeck.thea"){
+                //Log.d(TAG, "activity:" + a.activityInfo.taskAffinity);
+                if(!a.activityInfo.taskAffinity.equals("com.prdeck.thea")){
                     s.add(a.activityInfo.taskAffinity);
                 }
 
@@ -90,9 +90,10 @@ public class AppDataIntentService extends JobIntentService {
         UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar = Calendar.getInstance();
         long endTime = calendar.getTimeInMillis();
-        /*calendar.add(Calendar.DAY_OF_WEEK, -1);
+        /*calendar.add(Calendar.MONTH, -1);
         long startTime = calendar.getTimeInMillis();*/
         long startTime = getTimeStamp();
+        Log.d(TAG, "" + startTime + ", " + endTime);
         UsageEvents uEvents = usm.queryEvents(startTime,endTime);
         List<String> p = getInstalledApps(context);
         HashMap<String,Long> map = new HashMap<String,Long>();
@@ -107,29 +108,33 @@ public class AppDataIntentService extends JobIntentService {
                     if(map.containsKey(e.getPackageName())){
                         Long stime = map.get(e.getPackageName());
                         map.remove(e.getPackageName());
-                        AppData a = new AppData();
-                        a.setCategory(getAppCat(e.getPackageName()));
-                        if(e.getTimeStamp() - stime != 0){
+                        if(e.getTimeStamp() - stime > 0){
+                            AppData a = new AppData();
+                            a.setCategory(getAppCat(e.getPackageName()));
                             a.setDuration(e.getTimeStamp() - stime);
+                            a.setPackageName(e.getPackageName());
+                            a.setEndTime(e.getTimeStamp());
+                            a.setStartTime(stime);
+                            data.add(a);
                         }
-                        a.setPackageName(e.getPackageName());
-                        a.setEndTime(e.getTimeStamp());
-                        a.setStartTime(stime);
-                        data.add(a);
                     }
                 }
             }
         }
 
         /*data.forEach(d -> {
-            Log.d(tag, d.toString());
+            Log.d(TAG, d.toString());
         });*/
         if(data.size() > 0){
+            Log.d(TAG, "Upload Record Size : " + data.size());
             File fname = saveToTextFile(context, data);
             uploadToCloud(fname);
+        }else{
+            Log.d(TAG, "Nothing to upload");
         }
 
     }
+
 
     private  void saveTimeStamp(){
         AppData p = data.get(data.size() - 1);
@@ -148,6 +153,7 @@ public class AppDataIntentService extends JobIntentService {
         StorageReference storageRef = storage.getReference();
         StorageReference dataRef = storageRef.child(fname.getName());
         UploadTask ut = dataRef.putFile(uri);
+        Log.d(TAG, "Uploading File to cloud...");
         ut.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -196,7 +202,7 @@ public class AppDataIntentService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         Log.i(TAG, "Executing work: " + intent);
-        if (intent != null && intent.getAction() == ACTION_FIREBASE) {
+        if (intent != null && intent.getAction().equals(ACTION_FIREBASE)) {
             getStats(this);
         }
     }
