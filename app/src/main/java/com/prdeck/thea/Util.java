@@ -21,7 +21,7 @@ class Util {
         return mode == AppOpsManager.MODE_ALLOWED;
     }
     protected static void scheduleUpload(Context context, int id){
-        if(isTimerActive(id, context)){
+        /*if(isTimerActive(id, context)){
             Log.d(TAG, "Timer is already active");
             stopTimer(context, id);
             //return;
@@ -39,8 +39,8 @@ class Util {
                 AlarmManager.INTERVAL_DAY,pendingIntent);
         /*alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + (2*60*1000),
-                (2*60*1000), pendingIntent);*/
-        Log.d(TAG, "Alarm Scheduled for upload");
+                (2*60*1000), pendingIntent);
+        Log.d(TAG, "Alarm Scheduled for upload");*/
     }
 
     protected static Intent getAlarmIntent(Context context) {
